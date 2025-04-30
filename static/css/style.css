@@ -1,0 +1,49 @@
+.bg-image{
+    /* width: 100vw;
+    height: 100vh; */
+    background-image: url("../img/background.jpg");
+    background-color: #000; 
+    background-repeat: repeat;
+    background-size: cover;
+    
+    /* background-position: center; */
+}
+
+.box{
+    width: 100%;
+    height: calc(100vh - 32px);
+  
+
+    margin-left: 8px;
+
+    border-radius: 8px;
+    background-color: rgba(8, 5, 5, 0.7);
+  
+    box-sizing: border-box;
+}
+
+a{
+    color: grey;
+}
+
+a:hover{
+    color: gainsboro;;
+}
+
+
+footer{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+main{
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    /* align-items: center; */
+    height: 100vh;
+    width: 100%;
+
+}
