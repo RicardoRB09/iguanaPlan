@@ -18,19 +18,37 @@
       href="{{ url_for('static', filename='img/favicon.png', sizes='any') }}"
     />
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/style.css') }}"
     />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
 
   <body class="bg-image">
-    <main>
-      <div class="row col-md-12 text-center text-white">
-        <div class="col-md-2 p-3"><div class="box">This is a box!</div></div>
-        <div class="col-md-10">Saludos</div>
-      </div>
-    </main>
+    <header class="d-flex align-items-center gap-2 p-3">
+      <img
+        src="{{url_for('static', filename='img/iguana.svg')}}"
+        alt="IguanaPlan mug logo"
+        class="logo"
+        width="80"
+      />
+      <h1 class="chalk m-2 fs-8">iguanaPlan</h1>
+    </header>
+
+    <main>{% block content %} {% endblock content %}</main>
 
     <footer class="text-center text-white col-md-12">
       <!-- Copyright -->

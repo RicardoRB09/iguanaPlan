@@ -1,1 +1,16 @@
 {% extends "base.html "%}
+
+
+{%block content %}
+    <div class="row col-md-12 text-center text-white">
+        <div class="col-md-2 p-3">
+            <div class="box d-flex flex-column align-items-center">
+                <div class="col-md">
+                    <div>This is a box!</div>
+                    <button type="button" class="btn btn-light mt-3" onclick="this.blur();">+ Add a Plan</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-10">Saludos</div>
+    </div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %} {% block content %}
+
+<div
+  class="flex-column d-flex align-items-center justify-content-center flex-grow-1"
+>
+  <div class="d-flex flex-column align-items-center gap-3">
+    <h3 class="chalk auth-title align-self-start">Sign Up</h3>
+    <div class="signup-box">
+      <form action="" method="post">
+        <label for="name" class="signup-label">Name:</label>
+        <input class="signup-input" type="text" id="name" name="name" />
+        <br /><br />
+        <label for="email" class="signup-label">Email:</label>
+        <input class="signup-input" type="email" id="email" name="email" />
+        <br /><br />
+        <label for="password" class="signup-label">Password:</label>
+        <input
+          class="signup-input"
+          type="password"
+          id="password"
+          name="password"
+        /><br /><br /><br />
+        <div class="d-flex justify-content-center mb-3">
+          <input
+            class="signup-btn"
+            type="submit"
+            id="send-signup"
+            name="signup-btn"
+            value="Create an account"
+          />
+        </div>
+        <div class="d-flex align-items-center justify-content-center">
+          <div class="flex-grow-1"><hr class="thick m-0" /></div>
+          <div class="px-3 fw-bold or-text">or</div>
+          <div class="flex-grow-1"><hr class="thick m-0" /></div>
+        </div>
+        <div class="d-flex align-items-center justify-content-center">
+          <button type="submit" class="btn" name="signin-btn" value="signin" onclick="this.blur();">
+            Sign in
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
