@@ -52,9 +52,9 @@ app.config['DEBUG'] = True
 
 @app.route('/')
 def index():
-    # return render_template('index')
+    return render_template('index.html')
     # return redirect(url_for('signup_form'))
-    return redirect(url_for('signin_form'))
+    # return redirect(url_for('signin_form'))
 
 
 @app.route('/signin', methods=["GET", "POST"])
@@ -77,18 +77,20 @@ def signup_form():
             
         button_value = request.form.get('signup-btn')
         
+        print(f'btn value --> {button_value}')
+        
         if button_value == 'Create an account':
-            print(f'{user_name} - {user_email} - {user_password}')
+            print(f'Data --> {user_name} - {user_email} - {user_password}')
             
         elif button_value == 'signin':
             print(f'sign in')
-            return redirect(url_for('signin_form'))    
+             
             
         next = request.args.get('next', None)
         if next:
             print('😂😂😂')
             return redirect(next)
-        return redirect(url_for('index'))
+        return redirect(url_for('/'))
         
     return render_template('signup_form.html')
 
