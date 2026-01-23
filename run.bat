@@ -1,3 +1,3 @@
 @echo off
-call .env\Scripts\activate.bat
+call .venv\Scripts\activate.bat
 py app.py

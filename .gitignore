@@ -1,5 +1,8 @@
 # Ignore environment-specific settings
-env/
+venv/
+.venv
+
+#Ignore the environment file
 .env
 
 # Ignore compiled Python bytecode files

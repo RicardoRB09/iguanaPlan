@@ -38,6 +38,8 @@
 
 import os
 from flask import Flask, redirect, render_template, request, url_for
+from dotenv import load_dotenv
+from forms import SignupForm
 from datetime import datetime
 from holidays import get_holidays_by_year
 from weather import get_city_lat_long
@@ -45,15 +47,20 @@ from send_email import send_email
 from pico_placa import scrap_pyphoy_page
 
 
+load_dotenv()
+
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+if not app.config['SECRET_KEY']:
+    raise RuntimeError("SECRET_KEY is not set (check your .env file)")
 app.config['ENV'] = "development"
 app.config['DEBUG'] = True
 
 
 @app.route('/')
 def index():
-    return render_template('index.html')
-    # return redirect(url_for('signup_form'))
+    # return render_template('index.html')
+    return redirect(url_for('signup_form'))
     # return redirect(url_for('signin_form'))
 
 
@@ -68,31 +75,27 @@ def signin_form():
     return render_template('signin_form.html')
 
 
+
 @app.route('/signup', methods=["GET", "POST"])
 def signup_form():
-    if request.method == 'POST':
-        user_name = request.form['name']
-        user_email = request.form['email']
-        user_password = request.form['password']
-            
-        button_value = request.form.get('signup-btn')
+    
+    form = SignupForm()
+    action = request.form.get("action")
+    
+    if action == 'signin':
+        return redirect(url_for("signin_form"))
+    
+    if form.validate_on_submit():
+        user_name = form.name.data
+        user_email = form.email.data
+        user_password = form.password.data
         
-        print(f'btn value --> {button_value}')
+        print(f'Register data -->{user_name} - {user_email} - {user_password}')
         
-        if button_value == 'Create an account':
-            print(f'Data --> {user_name} - {user_email} - {user_password}')
-            
-        elif button_value == 'signin':
-            print(f'sign in')
-             
-            
-        next = request.args.get('next', None)
-        if next:
-            print('😂😂😂')
-            return redirect(next)
-        return redirect(url_for('/'))
+        return redirect(url_for('index.html'))
         
-    return render_template('signup_form.html')
+    return render_template('signup_form.html', form = form)
+
 
 
 @app.route('/myportfolio')
@@ -104,10 +107,13 @@ def clean_terminal():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
-
 if __name__ == '__main__':
-    
     app.run(debug=True)
+
+
+
+
+
     
     # scrap_pyphoy_page("Medellín")
     # while True:
