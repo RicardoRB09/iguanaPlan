@@ -70,6 +70,8 @@
 .signup-input, .signin-input{
     border-radius: 8px;
     caret-color: gainsboro;
+    font-family: var(--font-ui);
+    padding: 2px 8px;
 }
 
 .signup-btn, .signin-btn {

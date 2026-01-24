@@ -1,6 +1,6 @@
 # **iguanaPlan**
 
-...es la hora del te!
+...it's tea time!
 
 **iguanaPlan** is coming soon.
 
