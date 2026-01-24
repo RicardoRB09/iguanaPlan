@@ -5,21 +5,31 @@
 >
   <div class="d-flex flex-column align-items-center gap-3">
     <h3 class="chalk auth-title align-self-start">Welcome back!</h3>
+
     <div class="signin-box">
-      <form action="" method="post">
-        <label for="name" class="signin-label">Name:</label>
-        <input class="signin-input" type="text" id="name" name="name" />
-        <br /><br />
-        <label for="email" class="signin-label">Email:</label>
-        <input class="signin-input" type="email" id="email" name="email" />
-        <br /><br />
-        <label for="password" class="signin-label">Password:</label>
-        <input
-          class="signin-input"
-          type="password"
-          id="password"
-          name="password"
-        /><br /><br /><br />
+      <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+          <label for="{{ form.email.id }}" class="signin-label">Email:</label>
+          {{ form.email(class="signin-input", id=form.email.id) }}
+          {% if form.email.errors %}
+          <div class="form-error">
+            {{ form.email.errors[0] }}
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.password.id }}" class="signin-label">Password:</label>
+          {{ form.password(class="signin-input", id=form.password.id) }}
+          {% if form.password.errors %}
+          <div class="form-error">
+            {{ form.password.errors[0] }}
+          </div>
+          {% endif %}
+        </div>
+
         <div class="d-flex justify-content-center mb-3">
           <input
             class="signin-btn"
@@ -29,13 +39,21 @@
             value="Sign in"
           />
         </div>
+
         <div class="d-flex align-items-center justify-content-center">
           <div class="flex-grow-1"><hr class="thick m-0" /></div>
           <div class="px-3 fw-bold or-text">or</div>
           <div class="flex-grow-1"><hr class="thick m-0" /></div>
         </div>
+
         <div class="d-flex align-items-center justify-content-center">
-          <button type="submit" class="btn" name="signup-btn" value="signup" onclick="this.blur();">
+          <button
+            type="submit"
+            class="btn"
+            name="action"
+            value="signup"
+            onclick="this.blur()"
+          >
             Create an account
           </button>
         </div>

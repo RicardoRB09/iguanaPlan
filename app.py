@@ -39,7 +39,7 @@
 import os
 from flask import Flask, redirect, render_template, request, url_for
 from dotenv import load_dotenv
-from forms import SignupForm
+from forms import SignupForm, SigninForm
 from datetime import datetime
 from holidays import get_holidays_by_year
 from weather import get_city_lat_long
@@ -60,19 +60,26 @@ app.config['DEBUG'] = True
 @app.route('/')
 def index():
     # return render_template('index.html')
-    return redirect(url_for('signup_form'))
-    # return redirect(url_for('signin_form'))
+    # return redirect(url_for('signup_form'))
+    return redirect(url_for('signin_form'))
 
 
 @app.route('/signin', methods=["GET", "POST"])
 def signin_form():
-    if request.method == 'POST':
-        button_value = request.form.get('signup-btn')   
-        print('😄😄😄')
-        if button_value == 'signup':           
-            return redirect(url_for('signup_form'))
     
-    return render_template('signin_form.html')
+    form = SigninForm()
+    action = request.form.get("action")
+    
+    
+    if action == 'signup':
+        return redirect(url_for('signup_form'))
+    
+    if form.validate_on_submit():
+        user_email = form.email.data
+        user_password = form.password.data
+        print(f'Login data -->{user_email} - {user_password}')
+    
+    return render_template('signin_form.html', form = form)
 
 
 
@@ -81,6 +88,8 @@ def signup_form():
     
     form = SignupForm()
     action = request.form.get("action")
+    
+   
     
     if action == 'signin':
         return redirect(url_for("signin_form"))
