@@ -17,4 +17,7 @@ __pycache__/
 # Ignore .vscode folder
 .vscode/
 
+#Ignore de instance folder
+instance/
+
 

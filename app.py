@@ -1,3 +1,102 @@
+import os
+from sqlalchemy.exc import IntegrityError
+from flask import Flask, redirect, render_template, request, url_for
+from dotenv import load_dotenv
+from forms import SignupForm, SigninForm
+from models import User, db
+from datetime import datetime
+from holidays import get_holidays_by_year
+from weather import get_city_lat_long
+from send_email import send_email
+from pico_placa import scrap_pyphoy_page
+
+
+load_dotenv()
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+if not app.config['SECRET_KEY']:
+    raise RuntimeError("SECRET_KEY is not set (check your .env file)")
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///iguanaplan.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+app.config['DEBUG'] = True
+
+db.init_app(app)
+
+@app.route('/')
+def index():
+    # return render_template('index.html')
+    # return redirect(url_for('signup_form'))
+    return redirect(url_for('signin_form'))
+
+@app.route('/signin', methods=["GET", "POST"])
+def signin_form():
+    
+    form = SigninForm()
+    action = request.form.get("action")
+    
+    if action == 'signup':
+        return redirect(url_for('signup_form'))
+    
+    if form.validate_on_submit():
+        user_email = form.email.data
+        user_password = form.password.data
+        print(f'Login data -->{user_email} - {user_password}')
+    
+    return render_template('signin_form.html', form = form)
+
+
+@app.route('/signup', methods=["GET", "POST"])
+def signup_form():
+    
+    form = SignupForm()
+    action = request.form.get("action")
+    
+    if action == 'signin':
+        return redirect(url_for("signin_form"))
+    
+    if form.validate_on_submit():
+        user_name = form.name.data
+        user_email = form.email.data
+        user_password = form.password.data
+        
+        new_user = User(name=user_name, email=user_email, password=user_password)
+        db.session.add(new_user)
+        try:
+            db.session.commit()
+            return redirect(url_for('index'))
+            
+        except IntegrityError as e:
+            print(f"🚩 An error occurred: {e.args[0]}")
+            form.email.errors.append('Email already exists.')
+            db.session.rollback()
+        
+        
+    return render_template('signup_form.html', form = form)
+
+
+@app.route('/myportfolio')
+def myPortfolio():
+    return redirect("https://www.ricardoracines.com")
+
+
+def clean_terminal():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+        
+    app.run(debug=True)
+    
+        
+    
+
+
+
 
 # # # from flask import Flask, redirect, render_template
 # # # from blueprints.books.routes import books_bp
@@ -12,115 +111,6 @@
 
 # # # app.register_blueprint(books_bp, url_prefix = '/books')
 # # # app.register_blueprint(movies_bp, url_prefix = '/movies')
-
-
-
-# # # @app.route('/')
-# # # def home():
-# # #     return render_template('index.html')
-
-
-# # # @app.route('/myportfolio')
-# # # def myPortfolio():
-# # #     return redirect("https://www.ricardoracines.com")
-
-
-# # # if __name__ == '__main__':
-# # #     Movie.delete_movie_database()
-# # #     Movie.init_movies_database()
-# # #     Book.delete_book_database()
-# # #     Book.init_books_database()
-# # #     app.run(debug=True)
-
-
-
-
-
-import os
-from flask import Flask, redirect, render_template, request, url_for
-from dotenv import load_dotenv
-from forms import SignupForm, SigninForm
-from datetime import datetime
-from holidays import get_holidays_by_year
-from weather import get_city_lat_long
-from send_email import send_email
-from pico_placa import scrap_pyphoy_page
-
-
-load_dotenv()
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
-if not app.config['SECRET_KEY']:
-    raise RuntimeError("SECRET_KEY is not set (check your .env file)")
-app.config['ENV'] = "development"
-app.config['DEBUG'] = True
-
-
-@app.route('/')
-def index():
-    # return render_template('index.html')
-    # return redirect(url_for('signup_form'))
-    return redirect(url_for('signin_form'))
-
-
-@app.route('/signin', methods=["GET", "POST"])
-def signin_form():
-    
-    form = SigninForm()
-    action = request.form.get("action")
-    
-    
-    if action == 'signup':
-        return redirect(url_for('signup_form'))
-    
-    if form.validate_on_submit():
-        user_email = form.email.data
-        user_password = form.password.data
-        print(f'Login data -->{user_email} - {user_password}')
-    
-    return render_template('signin_form.html', form = form)
-
-
-
-@app.route('/signup', methods=["GET", "POST"])
-def signup_form():
-    
-    form = SignupForm()
-    action = request.form.get("action")
-    
-   
-    
-    if action == 'signin':
-        return redirect(url_for("signin_form"))
-    
-    if form.validate_on_submit():
-        user_name = form.name.data
-        user_email = form.email.data
-        user_password = form.password.data
-        
-        print(f'Register data -->{user_name} - {user_email} - {user_password}')
-        
-        return redirect(url_for('index.html'))
-        
-    return render_template('signup_form.html', form = form)
-
-
-
-@app.route('/myportfolio')
-def myPortfolio():
-    return redirect("https://www.ricardoracines.com")
-
-
-def clean_terminal():
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
-
-
 
 
     
