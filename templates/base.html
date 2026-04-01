@@ -37,7 +37,7 @@
     />
   </head>
 
-  <body class="bg-image">
+  <body class="bg-image d-flex flex-column vh-100 overflow-hidden">
     <header class="d-flex align-items-center gap-2 p-3">
       <img
         src="{{url_for('static', filename='img/iguana.svg')}}"
@@ -48,7 +48,7 @@
       <h1 class="chalk m-2 fs-8">iguanaPlan</h1>
     </header>
 
-    <main>{% block content %} {% endblock content %}</main>
+    <main class="app-main flex-grow-1 overflow-hidden">{% block content %} {% endblock content %}</main>
 
     <footer class="text-center text-white col-md-12">
       <!-- Copyright -->

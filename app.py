@@ -4,6 +4,7 @@ from flask import Flask, redirect, render_template, request, url_for
 from dotenv import load_dotenv
 from forms import SignupForm, SigninForm
 from models import User, db
+from flask_login import LoginManager, login_user, current_user
 from datetime import datetime
 from holidays import get_holidays_by_year
 from weather import get_city_lat_long
@@ -25,15 +26,24 @@ app.config['DEBUG'] = True
 
 db.init_app(app)
 
+login_manager = LoginManager(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    print('🌵 Loading user ID', user_id)
+    return User.query.get(int(user_id))
+
+
 @app.route('/')
 def index():
-    # return render_template('index.html')
+    user_name = current_user.name if current_user.is_authenticated else "Jon Doe"
+    return render_template('index.html', user_name=user_name)
     # return redirect(url_for('signup_form'))
-    return redirect(url_for('signin_form'))
+    # return redirect(url_for('signin_form'))
+
 
 @app.route('/signin', methods=["GET", "POST"])
 def signin_form():
-    
     form = SigninForm()
     action = request.form.get("action")
     
@@ -41,9 +51,13 @@ def signin_form():
         return redirect(url_for('signup_form'))
     
     if form.validate_on_submit():
-        user_email = form.email.data
-        user_password = form.password.data
-        print(f'Login data -->{user_email} - {user_password}')
+        user = User.query.filter_by(email=form.email.data).first()
+        
+        if user and user.check_password_hash(form.password.data):
+            login_user(user)
+            return redirect(url_for('index'))
+        
+        form.password.errors.append('Incorrect email or password. Try again.')
     
     return render_template('signin_form.html', form = form)
 
@@ -57,22 +71,18 @@ def signup_form():
     if action == 'signin':
         return redirect(url_for("signin_form"))
     
-    if form.validate_on_submit():
-        user_name = form.name.data
-        user_email = form.email.data
-        user_password = form.password.data
-        
-        new_user = User(name=user_name, email=user_email, password=user_password)
+    if form.validate_on_submit():       
+        new_user = User(name=form.name.data, email=form.email.data)
+        new_user.set_password_hash(form.password.data)
         db.session.add(new_user)
+        
         try:
             db.session.commit()
             return redirect(url_for('index'))
-            
         except IntegrityError as e:
             print(f"🚩 An error occurred: {e.args[0]}")
-            form.email.errors.append('Email already exists.')
             db.session.rollback()
-        
+            form.email.errors.append('Email already exists.')
         
     return render_template('signup_form.html', form = form)
 
@@ -91,11 +101,6 @@ if __name__ == '__main__':
         db.create_all()
         
     app.run(debug=True)
-    
-        
-    
-
-
 
 
 # # # from flask import Flask, redirect, render_template
