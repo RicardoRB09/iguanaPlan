@@ -2,9 +2,9 @@
 
 <div class="container-fluid h-100">
   <div class="row h-100">
-    <!-- LEFT PANEL -->
+    <!-- left panel -->
     <div class="menu-box sidebar p-3 h-100 d-flex flex-column">
-      <!-- TOP CONTENT -->
+      <!-- top content -->
       <div class="text-white">
         <div class="welcome-txt">Hello, <b>{{user_name}}</b></div>
 
@@ -20,36 +20,38 @@
         <div class="collapse" id="collapsedDiv"></div>
       </div>
 
-      <!-- THIS IS THE MAGIC SPACER -->
+      <!-- spacer div -->
       <div class="flex-grow-1"></div>
 
       <div><hr class="thick m-0" /></div>
 
-      <!-- LOGOUT AT BOTTOM -->
-      <button type="submit" class="btn" name="action" onclick="this.blur()">
-        <svg
-          class="logout-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M12 20C7.58172 20 4 16.4183 4 12C4 7.58172 7.58172 4 12 4"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-          />
-          <path
-            d="M10 12H20M20 12L17 9M20 12L17 15"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        Logout
-      </button>
+      <!-- logout button -->
+      <a href="{{ url_for('logout')}}" style="text-decoration: none">
+        <button type="submit" class="btn" name="action" onclick="this.blur()">
+          <svg
+            class="logout-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 20C7.58172 20 4 16.4183 4 12C4 7.58172 7.58172 4 12 4"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <path
+              d="M10 12H20M20 12L17 9M20 12L17 15"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Logout
+        </button>
+      </a>
     </div>
 
     <!-- RIGHT CONTENT -->

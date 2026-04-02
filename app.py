@@ -4,7 +4,7 @@ from flask import Flask, redirect, render_template, request, url_for
 from dotenv import load_dotenv
 from forms import SignupForm, SigninForm
 from models import User, db
-from flask_login import LoginManager, login_user, current_user
+from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 from datetime import datetime
 from holidays import get_holidays_by_year
 from weather import get_city_lat_long
@@ -28,6 +28,7 @@ db.init_app(app)
 
 login_manager = LoginManager(app)
 
+
 @login_manager.user_loader
 def load_user(user_id):
     print('🌵 Loading user ID', user_id)
@@ -35,8 +36,11 @@ def load_user(user_id):
 
 
 @app.route('/')
+@login_required
 def index():
     user_name = current_user.name if current_user.is_authenticated else "Jon Doe"
+    
+    print(f'current_user --> {current_user}')
     return render_template('index.html', user_name=user_name)
     # return redirect(url_for('signup_form'))
     # return redirect(url_for('signin_form'))
@@ -78,13 +82,21 @@ def signup_form():
         
         try:
             db.session.commit()
-            return redirect(url_for('index'))
+            return redirect(url_for('signin_form'))
         except IntegrityError as e:
             print(f"🚩 An error occurred: {e.args[0]}")
             db.session.rollback()
             form.email.errors.append('Email already exists.')
         
     return render_template('signup_form.html', form = form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    print(f'🚀 User logged out successfully')
+    return redirect(url_for('signin_form'))
+
 
 
 @app.route('/myportfolio')
