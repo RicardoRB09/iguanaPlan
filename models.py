@@ -19,4 +19,9 @@ class User(db.Model, UserMixin):
     def check_password_hash(self, password):
         return check_password_hash(pwhash=self.password_hash, password=password)
     
+
+class Plan(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref=db.backref('plans', lazy=True))
     

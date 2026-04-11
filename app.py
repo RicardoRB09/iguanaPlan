@@ -3,7 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from flask import Flask, redirect, render_template, request, url_for
 from dotenv import load_dotenv
 from forms import SignupForm, SigninForm
-from models import User, db
+from models import User, Plan,  db
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 from datetime import datetime
 from holidays import get_holidays_by_year
@@ -27,6 +27,7 @@ app.config['DEBUG'] = True
 db.init_app(app)
 
 login_manager = LoginManager(app)
+login_manager.login_view = 'signin_form'
 
 
 @login_manager.user_loader
@@ -41,7 +42,7 @@ def index():
     user_name = current_user.name if current_user.is_authenticated else "Jon Doe"
     
     print(f'current_user --> {current_user}')
-    return render_template('index.html', user_name=user_name)
+    return render_template('index.html', user_name=user_name, plans=current_user.plans)
     # return redirect(url_for('signup_form'))
     # return redirect(url_for('signin_form'))
 
@@ -90,12 +91,22 @@ def signup_form():
         
     return render_template('signup_form.html', form = form)
 
+
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     print(f'🚀 User logged out successfully')
     return redirect(url_for('signin_form'))
+
+
+@app.route('/add_plan', methods=['POST'])
+@login_required
+def add_plan():
+    new_plan = Plan(user_id=current_user.id)
+    db.session.add(new_plan)
+    db.session.commit()
+    return redirect(url_for('index'))
 
 
 
