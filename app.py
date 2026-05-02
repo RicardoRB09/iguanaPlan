@@ -1,18 +1,20 @@
 import os
-from sqlalchemy.exc import IntegrityError
-from flask import Flask, redirect, render_template, request, url_for
-from dotenv import load_dotenv
-from forms import SignupForm, SigninForm
-from models import User, Plan,  db
-from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 from datetime import datetime
+from dotenv import load_dotenv
+from flask import Flask, redirect, render_template, request, url_for
+from flask_login import LoginManager, login_user, current_user, logout_user, login_required
+from forms import SignupForm, SigninForm
 from holidays import get_holidays_by_year
-from weather import get_city_lat_long
-from send_email import send_email
+from models import User, Plan,  db
+from pathlib import Path
 from pico_placa import scrap_pyphoy_page
+from send_email import send_email
+from sqlalchemy.exc import IntegrityError
+from weather import get_city_lat_long
 
 
-load_dotenv()
+BASE_DIR = Path(__file__).resolve().parent
+load_dotenv(BASE_DIR / ".env")
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
@@ -103,8 +105,16 @@ def logout():
 @app.route('/add_plan', methods=['POST'])
 @login_required
 def add_plan():
-    new_plan = Plan(user_id=current_user.id)
+    description = 'This is a test'
+    new_plan = Plan(user_id=current_user.id, description=description)
     db.session.add(new_plan)
+    db.session.commit()
+    return redirect(url_for('index'))
+
+
+@app.route('/delete_all_plans', methods=["GET"])
+def delete_all_plans():
+    db.session.query(Plan).delete()
     db.session.commit()
     return redirect(url_for('index'))
 
